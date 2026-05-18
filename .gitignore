@@ -28,3 +28,15 @@ replay_pid*
 
 # Gradle files
 .gradle
+
+# Build artifacts
+build/
+
+# Run artifacts
+run/logs
+run/saves
+run/downloads
+run/data
+run/usercache.json
+run/options.txt
+run/command_history.txt
