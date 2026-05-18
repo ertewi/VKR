@@ -5,13 +5,14 @@
 	"name": "ertOres",
 	"description": "The mod reworks the generation, mining and smelting of ore",
 	"authors": [
-		"Me!"
+		"Nikita ertewi Yagodkin"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/ertewi/VKR",
+		"issues": "https://github.com/ertewi/VKR/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/ertores/icon.png",
 	"environment": "*",
 	"entrypoints": {
@@ -20,6 +21,9 @@
 		],
 		"client": [
 			"com.ertores.client.ErtoresModClient"
+		],
+		"server": [
+			"com.ertores.client.ErtoresModServer"
 		]
 	},
 	"mixins": [
@@ -27,6 +31,10 @@
 		{
 			"config": "ertores.client.mixins.json",
 			"environment": "client"
+		},
+		{
+			"config": "ertores.server.mixins.json",
+			"environment": "server"
 		}
 	],
 	"depends": {
