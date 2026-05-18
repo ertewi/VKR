@@ -14,12 +14,20 @@ repositories {
 	// for more information about repositories.
 }
 
+sourceSets {
+	server {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+	}
+}
+
 loom {
 	splitEnvironmentSourceSets()
 	mods {
 		"ertores" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
+			sourceSet sourceSets.server
 		}
 	}
 }

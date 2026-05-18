@@ -3,7 +3,7 @@
 	"package": "com.ertores.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"com.ertores.mixin.ErtoresMixin"
+		"ErtoresMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

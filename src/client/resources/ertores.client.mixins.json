@@ -3,12 +3,9 @@
 	"package": "com.ertores.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"com.ertores.client.mixin.ErtoresClientMixin"
+		"ErtoresClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
 	}
 }
