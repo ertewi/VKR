@@ -16,9 +16,8 @@ repositories {
 
 loom {
 	splitEnvironmentSourceSets()
-
 	mods {
-		"modid" {
+		"ertores" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}

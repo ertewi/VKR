@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "ertores",
 	"version": "${version}",
-	"name": "Example Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "ertOres",
+	"description": "The mod reworks the generation, mining and smelting of ore",
 	"authors": [
 		"Me!"
 	],
@@ -12,20 +12,20 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/ertores/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"com.ertores.ErtoresMod"
 		],
 		"client": [
-			"com.example.client.ExampleModClient"
+			"com.ertores.client.ErtoresModClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+		"ertores.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "ertores.client.mixins.json",
 			"environment": "client"
 		}
 	],

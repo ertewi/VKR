@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "com.example.client.mixin",
+	"package": "com.ertores.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin"
+		"com.ertores.client.mixin.ErtoresClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
