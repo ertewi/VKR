@@ -3,7 +3,8 @@
 	"package": "com.ertores.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ErtoresClientMixin"
+		"ErtoresClientMixin",
+		"DeathScreenMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
