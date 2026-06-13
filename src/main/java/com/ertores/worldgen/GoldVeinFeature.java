@@ -40,16 +40,11 @@ public class GoldVeinFeature extends Feature<OreConfiguration> {
         int placed = 0;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
-        // Параметры жилы: компактнее и вертикальнее чем угольный пласт
-        int veinRadius = 8;           // Радиус распространения (x,z)
-        int veinHeight = 12;           // Вертикальный размах
+        int veinRadius = 8;
+        int veinHeight = 12;
 
-        // Центр жилы
-        double centerX = origin.getX();
-        double centerZ = origin.getZ();
         double centerY = origin.getY();
 
-        // Шум для формы жилы (ветвистая структура)
         ImprovedNoise shapeNoise = new ImprovedNoise(random);
         ImprovedNoise branchNoise = new ImprovedNoise(RandomSource.create());
 
@@ -59,25 +54,19 @@ public class GoldVeinFeature extends Feature<OreConfiguration> {
                     int worldX = origin.getX() + x;
                     int worldZ = origin.getZ() + z;
 
-                    // Горизонтальное расстояние от центра
                     double distXZ = Math.sqrt(x * x + z * z) / veinRadius;
 
-                    // Шум для определения "толщины" жилы в этом месте
                     double thicknessNoise = shapeNoise.noise(worldX * 0.1, 0, worldZ * 0.1);
 
-                    // Шанс что в этой колонке будет руда (создает "дырявую" структуру)
                     double density = (1 - distXZ) * (0.4 + thicknessNoise * 0.3);
 
                     if (density < 0.2 || random.nextDouble() > density) continue;
 
-                    // Вычисляем вертикальный диапазон в этой точке
                     double verticalOffsetNoise = branchNoise.noise(worldX * 0.08, 0, worldZ * 0.08) * veinHeight * 0.5;
                     int veinTop = (int)(centerY + verticalOffsetNoise - veinHeight / 3);
                     int veinBottom = (int)(centerY + verticalOffsetNoise + veinHeight / 3);
 
-                    // Добавляем еще один слой шума для ветвистости
                     if (distXZ > 0.6) {
-                        // Края жилы тоньше
                         veinBottom = veinTop + random.nextInt(3) + 2;
                     }
 
@@ -95,30 +84,21 @@ public class GoldVeinFeature extends Feature<OreConfiguration> {
 
                         BlockState currentBlock = section.getBlockState(sx, sy, sz);
 
-                        // Проверяем, можно ли заменить блок
                         if (!canReplace(currentBlock, config)) continue;
 
-                        // Определяем, что ставить
                         BlockState placeBlock = null;
                         double rand = random.nextDouble();
 
-                        // --- Реалистичное распределение ---
                         if (rand < 0.02) {
-                            // 2% - богатая жила (золотой блок)
                             placeBlock = Blocks.RAW_GOLD_BLOCK.defaultBlockState();
                         }
                         else if (rand < 0.15) {
-                            // 13% - кварц с богатым вкраплением (твой кастомный блок)
-                            // Используй дефолтный кварц или добавь свой блок "golden_quartz_ore"
                             placeBlock = Blocks.NETHER_QUARTZ_ORE.defaultBlockState();
-                            // TODO: замени на свой блок, например: ErtoresBlocks.GOLDEN_QUARTZ_ORE
                         }
                         else if (rand < 0.7) {
-                            // 55% - обычная золотая руда
                             placeBlock = getGoldOreState(currentBlock);
                         }
                         else {
-                            // 30% - пустой кварц (жильный материал)
                             placeBlock = Blocks.QUARTZ_BLOCK.defaultBlockState();
                         }
 

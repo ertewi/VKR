@@ -42,7 +42,6 @@ public class KimberlitePipeFeature extends Feature<OreConfiguration> {
         BlockPos.MutableBlockPos orePos = new BlockPos.MutableBlockPos();
 
         try (BulkSectionAccess sectionGetter = new BulkSectionAccess(level)) {
-            // Центр трубки со случайным смещением
             double centerX = origin.getX() + random.nextDouble() * 8 - 4;
             double centerZ = origin.getZ() + random.nextDouble() * 8 - 4;
 
@@ -50,7 +49,6 @@ public class KimberlitePipeFeature extends Feature<OreConfiguration> {
             double bottomRadius = 1.0 + random.nextDouble() * 1.5;
             double wallThickness = 1.0 + random.nextDouble() * 1.5;
 
-            // Высота трубки
             int pipeHeight = 30 + random.nextInt(40);
             int craterDepth = 2 + random.nextInt(3);
             int searchRadius = 12;

@@ -32,7 +32,6 @@ public class LapisGeodeFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         int placed = 0;
 
-        // Собираем все позиции в сфере
         List<BlockPos> positions = new ArrayList<>();
 
         for (int x = -outerRadius; x <= outerRadius; x++) {
@@ -50,17 +49,11 @@ public class LapisGeodeFeature extends Feature<NoneFeatureConfiguration> {
 
                     if (!isReplaceableStone(currentState)) continue;
 
-                    // Внутренняя пустота — оставляем оригинальный блок
                     if (distSq <= minDistSq) {
-                        // Ничего не делаем, блок остается как был
                         continue;
-                    }
-                    // Внешний слой — мрамор
-                    else if (distSq > oreDistSq) {
+                    } else if (distSq > oreDistSq) {
                         level.setBlock(pos, Blocks.CALCITE.defaultBlockState(), 2);
-                    }
-                    // Средний слой — руда лазурита
-                    else {
+                    } else {
                         BlockState oreState = getLapisOreState(pos.getY());
                         level.setBlock(pos, oreState, 2);
                         placed++;
