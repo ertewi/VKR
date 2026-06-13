@@ -37,6 +37,8 @@ run/logs
 run/saves
 run/downloads
 run/data
+run/crash-reports
 run/usercache.json
 run/options.txt
 run/command_history.txt
+run/debug-profile.json

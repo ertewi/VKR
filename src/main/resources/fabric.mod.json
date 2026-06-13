@@ -23,7 +23,7 @@
 			"com.ertores.client.ErtoresModClient"
 		],
 		"server": [
-			"com.ertores.client.ErtoresModServer"
+			"com.ertores.server.ErtoresModServer"
 		]
 	},
 	"mixins": [
@@ -31,10 +31,6 @@
 		{
 			"config": "ertores.client.mixins.json",
 			"environment": "client"
-		},
-		{
-			"config": "ertores.server.mixins.json",
-			"environment": "server"
 		}
 	],
 	"depends": {
