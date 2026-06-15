@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ertores:block/grinder"
+    "model": "ertores:item/grinder"
   }
 }

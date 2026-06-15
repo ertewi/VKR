@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ertores:block/electric_furnace"
+    "model": "ertores:item/electric_furnace"
   }
 }

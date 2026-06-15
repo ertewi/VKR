@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ertores:block/crusher"
+    "model": "ertores:item/crusher"
   }
 }

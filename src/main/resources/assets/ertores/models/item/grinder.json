@@ -1,3 +1,6 @@
 {
-  "parent": "ertores:block/grinder"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ertores:item/grinder"
+  }
 }

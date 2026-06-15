@@ -1,3 +1,6 @@
 {
-  "parent": "ertores:block/electric_furnace"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ertores:item/electric_furnace"
+  }
 }

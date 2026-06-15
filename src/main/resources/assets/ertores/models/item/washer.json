@@ -1,3 +1,6 @@
 {
-  "parent": "ertores:block/washer"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "ertores:item/washer"
+  }
 }
