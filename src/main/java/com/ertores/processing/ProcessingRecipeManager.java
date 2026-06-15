@@ -41,6 +41,16 @@ public final class ProcessingRecipeManager implements ResourceManagerReloadListe
 				.findFirst();
 	}
 
+	public static Optional<ProcessingRecipe> findByInputItem(MachineOperation operation, ItemStack stack) {
+		if (stack.isEmpty()) {
+			return Optional.empty();
+		}
+
+		return recipes.stream()
+				.filter(recipe -> recipe.operation() == operation && recipe.input() == stack.getItem())
+				.findFirst();
+	}
+
 	@Override
 	public void onResourceManagerReload(ResourceManager resourceManager) {
 		List<ProcessingRecipe> loaded = new ArrayList<>();

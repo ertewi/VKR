@@ -53,6 +53,10 @@ public class ProcessingMachineBlock extends BaseEntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 
+		if (stack.isEmpty()) {
+			return interactWithEmptyHand(level, pos, player);
+		}
+
 		if (level.getBlockEntity(pos) instanceof ProcessingMachineBlockEntity machine && machine.insertOne(stack, player)) {
 			player.sendOverlayMessage(Component.translatable("message.ertores.machine_inserted"));
 			return InteractionResult.SUCCESS_SERVER;
@@ -68,6 +72,10 @@ public class ProcessingMachineBlock extends BaseEntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 
+		return interactWithEmptyHand(level, pos, player);
+	}
+
+	private InteractionResult interactWithEmptyHand(Level level, BlockPos pos, Player player) {
 		if (level.getBlockEntity(pos) instanceof ProcessingMachineBlockEntity machine) {
 			if (!machine.extractTo(player)) {
 				player.sendOverlayMessage(machine.status());

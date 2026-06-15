@@ -67,12 +67,20 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 			return false;
 		}
 
-		ItemStack candidate = heldStack.copyWithCount(1);
 		MachineOperation operation = operation();
-		if (ProcessingRecipeManager.find(operation, candidate).isEmpty()) {
+		Optional<ProcessingRecipe> recipe = ProcessingRecipeManager.findByInputItem(operation, heldStack);
+		if (recipe.isEmpty()) {
 			return false;
 		}
 
+		int targetCount = Math.max(1, recipe.get().inputCount());
+		int currentCount = input.isEmpty() ? 0 : input.getCount();
+		int insertCount = Math.min(heldStack.getCount(), targetCount - currentCount);
+		if (insertCount <= 0) {
+			return false;
+		}
+
+		ItemStack candidate = heldStack.copyWithCount(insertCount);
 		if (!input.isEmpty() && (!ItemStack.isSameItemSameComponents(input, candidate) || input.getCount() >= input.getItem().getDefaultMaxStackSize())) {
 			return false;
 		}
@@ -80,11 +88,11 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 		if (input.isEmpty()) {
 			input = candidate;
 		} else {
-			input.grow(1);
+			input.grow(insertCount);
 		}
 
 		if (!player.isCreative()) {
-			heldStack.shrink(1);
+			heldStack.shrink(insertCount);
 		}
 
 		setChanged();
