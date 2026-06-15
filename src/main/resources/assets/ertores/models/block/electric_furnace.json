@@ -1,6 +1,12 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "all": "minecraft:block/blast_furnace_front"
+    "particle": "ertores:block/machine_side",
+    "down": "ertores:block/machine_bottom",
+    "up": "ertores:block/machine_top",
+    "north": "ertores:block/electric_furnace_front_off",
+    "south": "ertores:block/machine_side",
+    "west": "ertores:block/machine_side",
+    "east": "ertores:block/machine_side"
   }
 }

@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "active=false": {
+      "model": "ertores:block/crusher"
+    },
+    "active=true": {
       "model": "ertores:block/crusher"
     }
   }

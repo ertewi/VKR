@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "active=false": {
       "model": "ertores:block/washer"
+    },
+    "active=true": {
+      "model": "ertores:block/washer_on"
     }
   }
 }

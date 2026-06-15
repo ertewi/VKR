@@ -1,7 +1,10 @@
 {
   "variants": {
-    "": {
+    "active=false": {
       "model": "ertores:block/electric_furnace"
+    },
+    "active=true": {
+      "model": "ertores:block/electric_furnace_on"
     }
   }
 }

@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "active=false": {
+      "model": "ertores:block/grinder"
+    },
+    "active=true": {
       "model": "ertores:block/grinder"
     }
   }

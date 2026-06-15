@@ -36,17 +36,25 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 		}
 
 		MachineOperation operation = block.operation();
+		boolean wasActive = state.getValue(ProcessingMachineBlock.ACTIVE);
 
 		if (machine.maxProgress <= 0) {
 			Optional<ProcessingRecipe> recipe = ProcessingRecipeManager.find(operation, machine.input);
 			if (recipe.isEmpty() || !machine.canAccept(recipe.get())) {
 				machine.progress = 0;
+				if (wasActive) {
+					level.setBlock(pos, state.setValue(ProcessingMachineBlock.ACTIVE, false), Block.UPDATE_ALL);
+				}
 				return;
 			}
 
 			machine.maxProgress = recipe.get().processingTime();
 			machine.progress = 0;
 			machine.setChanged();
+		}
+
+		if (!wasActive) {
+			level.setBlock(pos, state.setValue(ProcessingMachineBlock.ACTIVE, true), Block.UPDATE_ALL);
 		}
 
 		machine.progress++;
@@ -58,6 +66,7 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 			});
 			machine.progress = 0;
 			machine.maxProgress = 0;
+			level.setBlock(pos, state.setValue(ProcessingMachineBlock.ACTIVE, false), Block.UPDATE_ALL);
 			machine.setChanged();
 		}
 	}

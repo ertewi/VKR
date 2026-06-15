@@ -12,20 +12,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class ProcessingMachineBlock extends BaseEntityBlock {
 	public static final MapCodec<ProcessingMachineBlock> CODEC = simpleCodec(properties -> new ProcessingMachineBlock(MachineOperation.CRUSHING, properties));
+	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	private final MachineOperation operation;
 
 	public ProcessingMachineBlock(MachineOperation operation, Properties properties) {
 		super(properties);
 		this.operation = operation;
+		registerDefaultState(defaultBlockState().setValue(ACTIVE, false));
 	}
 
 	public MachineOperation operation() {
@@ -45,6 +50,11 @@ public class ProcessingMachineBlock extends BaseEntityBlock {
 	@Override
 	protected RenderShape getRenderShape(BlockState state) {
 		return RenderShape.MODEL;
+	}
+
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(ACTIVE);
 	}
 
 	@Override
