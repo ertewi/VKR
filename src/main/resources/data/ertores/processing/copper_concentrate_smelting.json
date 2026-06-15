@@ -1,0 +1,13 @@
+{
+  "operation": "smelting",
+  "input": {
+    "item": "ertores:copper_concentrate"
+  },
+  "result": {
+    "item": "minecraft:copper_ingot"
+  },
+  "byproduct": {
+    "item": "ertores:slag"
+  },
+  "processing_time": 200
+}

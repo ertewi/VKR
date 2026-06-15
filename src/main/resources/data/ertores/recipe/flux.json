@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:calcite",
+    "minecraft:charcoal"
+  ],
+  "result": {
+    "id": "ertores:flux",
+    "count": 2
+  }
+}

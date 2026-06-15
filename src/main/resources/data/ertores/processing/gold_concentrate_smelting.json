@@ -1,0 +1,13 @@
+{
+  "operation": "smelting",
+  "input": {
+    "item": "ertores:gold_concentrate"
+  },
+  "result": {
+    "item": "minecraft:gold_ingot"
+  },
+  "byproduct": {
+    "item": "ertores:slag"
+  },
+  "processing_time": 220
+}

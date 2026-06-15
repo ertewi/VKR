@@ -1,0 +1,13 @@
+{
+  "operation": "smelting",
+  "input": {
+    "item": "ertores:iron_concentrate"
+  },
+  "result": {
+    "item": "minecraft:iron_ingot"
+  },
+  "byproduct": {
+    "item": "ertores:slag"
+  },
+  "processing_time": 200
+}

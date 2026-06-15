@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:smooth_stone",
+    "P": "minecraft:piston"
+  },
+  "pattern": [
+    "ICI",
+    "SPS",
+    "III"
+  ],
+  "result": {
+    "id": "ertores:crusher"
+  }
+}
