@@ -1,0 +1,11 @@
+{
+  "operation": "crushing",
+  "input": {
+    "item": "minecraft:deepslate_copper_ore"
+  },
+  "result": {
+    "item": "ertores:crushed_copper_ore",
+    "count": 4
+  },
+  "processing_time": 140
+}

@@ -1,0 +1,11 @@
+{
+  "operation": "crushing",
+  "input": {
+    "item": "minecraft:iron_ore"
+  },
+  "result": {
+    "item": "ertores:crushed_iron_ore",
+    "count": 2
+  },
+  "processing_time": 120
+}

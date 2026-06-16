@@ -1,0 +1,10 @@
+{
+  "operation": "grinding",
+  "input": {
+    "item": "ertores:crushed_iron_ore"
+  },
+  "result": {
+    "item": "ertores:iron_ore_powder"
+  },
+  "processing_time": 100
+}

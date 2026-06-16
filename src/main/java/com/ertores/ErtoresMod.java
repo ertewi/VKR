@@ -1,5 +1,11 @@
 package com.ertores;
 
+import com.ertores.processing.ProcessingRecipeManager;
+import com.ertores.registry.ModBlockEntities;
+import com.ertores.registry.ModBlocks;
+import com.ertores.registry.ModCreativeTabs;
+import com.ertores.registry.ModItems;
+import com.ertores.registry.ModMenus;
 import com.ertores.worldgen.*;
 import net.fabricmc.api.ModInitializer;
 
@@ -20,6 +26,11 @@ import org.slf4j.LoggerFactory;
 public class ErtoresMod implements ModInitializer {
 	public static final String MOD_ID = "ertores";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
+	}
+
 	public static final Feature<OreConfiguration> COAL_SEAM =
 			Registry.register(
 					BuiltInRegistries.FEATURE,
@@ -59,6 +70,13 @@ public class ErtoresMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		ModItems.initialize();
+		ModBlocks.initialize();
+		ModBlockEntities.initialize();
+		ModMenus.initialize();
+		ModCreativeTabs.initialize();
+		ProcessingRecipeManager.register();
+
 		BiomeModifications.create(Identifier.parse("ertores:add_kimberlite"))
 				.add(
 						ModificationPhase.ADDITIONS,

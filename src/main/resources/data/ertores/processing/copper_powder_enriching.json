@@ -1,0 +1,14 @@
+{
+  "operation": "enriching",
+  "input": {
+    "item": "ertores:copper_ore_powder",
+    "count": 2
+  },
+  "result": {
+    "item": "ertores:copper_concentrate"
+  },
+  "byproduct": {
+    "item": "ertores:tailings"
+  },
+  "processing_time": 180
+}

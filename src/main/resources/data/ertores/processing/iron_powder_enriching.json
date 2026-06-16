@@ -1,0 +1,14 @@
+{
+  "operation": "enriching",
+  "input": {
+    "item": "ertores:iron_ore_powder",
+    "count": 2
+  },
+  "result": {
+    "item": "ertores:iron_concentrate"
+  },
+  "byproduct": {
+    "item": "ertores:tailings"
+  },
+  "processing_time": 180
+}

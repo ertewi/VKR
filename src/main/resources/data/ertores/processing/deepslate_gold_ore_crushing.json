@@ -1,0 +1,11 @@
+{
+  "operation": "crushing",
+  "input": {
+    "item": "minecraft:deepslate_gold_ore"
+  },
+  "result": {
+    "item": "ertores:crushed_gold_ore",
+    "count": 3
+  },
+  "processing_time": 160
+}
