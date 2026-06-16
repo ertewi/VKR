@@ -5,10 +5,19 @@ import com.ertores.processing.MachineOperation;
 import com.ertores.processing.ProcessingOutput;
 import com.ertores.processing.ProcessingRecipe;
 import com.ertores.processing.ProcessingRecipeManager;
+import com.ertores.menu.ProcessingMachineMenu;
 import com.ertores.registry.ModBlockEntities;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -19,12 +28,40 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.Optional;
 
-public class ProcessingMachineBlockEntity extends BlockEntity {
-	private ItemStack input = ItemStack.EMPTY;
-	private ItemStack output = ItemStack.EMPTY;
-	private ItemStack byproduct = ItemStack.EMPTY;
+public class ProcessingMachineBlockEntity extends BlockEntity implements Container, ExtendedMenuProvider<BlockPos> {
+	private static final int INPUT_SLOT = 0;
+	private static final int OUTPUT_SLOT = 1;
+	private static final int BYPRODUCT_SLOT = 2;
+	private static final int SLOT_COUNT = 3;
+
+	private NonNullList<ItemStack> items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 	private int progress;
 	private int maxProgress;
+	private final ContainerData data = new ContainerData() {
+		@Override
+		public int get(int index) {
+			return switch (index) {
+				case 0 -> progress;
+				case 1 -> maxProgress;
+				default -> 0;
+			};
+		}
+
+		@Override
+		public void set(int index, int value) {
+			switch (index) {
+				case 0 -> progress = value;
+				case 1 -> maxProgress = value;
+				default -> {
+				}
+			}
+		}
+
+		@Override
+		public int getCount() {
+			return 2;
+		}
+	};
 
 	public ProcessingMachineBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.PROCESSING_MACHINE, pos, state);
@@ -37,9 +74,10 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 
 		MachineOperation operation = block.operation();
 		boolean wasActive = state.getValue(ProcessingMachineBlock.ACTIVE);
+		ItemStack input = machine.items.get(INPUT_SLOT);
 
 		if (machine.maxProgress <= 0) {
-			Optional<ProcessingRecipe> recipe = ProcessingRecipeManager.find(operation, machine.input);
+			Optional<ProcessingRecipe> recipe = ProcessingRecipeManager.find(operation, input);
 			if (recipe.isEmpty() || !machine.canAccept(recipe.get())) {
 				machine.progress = 0;
 				if (wasActive) {
@@ -60,8 +98,8 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 		machine.progress++;
 
 		if (machine.progress >= machine.maxProgress) {
-			ProcessingRecipeManager.find(operation, machine.input).ifPresent(recipe -> {
-				machine.input.shrink(recipe.inputCount());
+			ProcessingRecipeManager.find(operation, input).ifPresent(recipe -> {
+				input.shrink(recipe.inputCount());
 				machine.finishRecipe(recipe);
 			});
 			machine.progress = 0;
@@ -82,6 +120,7 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 			return false;
 		}
 
+		ItemStack input = items.get(INPUT_SLOT);
 		int targetCount = Math.max(1, recipe.get().inputCount());
 		int currentCount = input.isEmpty() ? 0 : input.getCount();
 		int insertCount = Math.min(heldStack.getCount(), targetCount - currentCount);
@@ -95,7 +134,7 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 		}
 
 		if (input.isEmpty()) {
-			input = candidate;
+			items.set(INPUT_SLOT, candidate);
 		} else {
 			input.grow(insertCount);
 		}
@@ -109,14 +148,16 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 	}
 
 	public boolean extractTo(Player player) {
+		ItemStack output = items.get(OUTPUT_SLOT);
 		boolean extracted = moveToPlayer(player, output);
 		if (extracted) {
-			output = ItemStack.EMPTY;
+			items.set(OUTPUT_SLOT, ItemStack.EMPTY);
 		}
 
+		ItemStack byproduct = items.get(BYPRODUCT_SLOT);
 		boolean extractedByproduct = moveToPlayer(player, byproduct);
 		if (extractedByproduct) {
-			byproduct = ItemStack.EMPTY;
+			items.set(BYPRODUCT_SLOT, ItemStack.EMPTY);
 		}
 
 		if (extracted || extractedByproduct) {
@@ -132,7 +173,7 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 			return Component.translatable("message.ertores.machine_progress", percent);
 		}
 
-		if (!input.isEmpty()) {
+		if (!items.get(INPUT_SLOT).isEmpty()) {
 			return Component.translatable("message.ertores.machine_waiting");
 		}
 
@@ -144,20 +185,29 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 			return;
 		}
 
-		Block.popResource(level, worldPosition, input);
-		Block.popResource(level, worldPosition, output);
-		Block.popResource(level, worldPosition, byproduct);
-		input = ItemStack.EMPTY;
-		output = ItemStack.EMPTY;
-		byproduct = ItemStack.EMPTY;
+		for (ItemStack stack : items) {
+			Block.popResource(level, worldPosition, stack);
+		}
+		items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
+	}
+
+	public ContainerData data() {
+		return data;
+	}
+
+	public boolean canProcessInput(ItemStack stack) {
+		return ProcessingRecipeManager.findByInputItem(operation(), stack).isPresent();
 	}
 
 	@Override
 	protected void loadAdditional(ValueInput input) {
 		super.loadAdditional(input);
-		this.input = input.read("input", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
-		this.output = input.read("output", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
-		this.byproduct = input.read("byproduct", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+		items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
+		ContainerHelper.loadAllItems(input, items);
+
+		input.read("input", ItemStack.OPTIONAL_CODEC).ifPresent(stack -> items.set(INPUT_SLOT, stack));
+		input.read("output", ItemStack.OPTIONAL_CODEC).ifPresent(stack -> items.set(OUTPUT_SLOT, stack));
+		input.read("byproduct", ItemStack.OPTIONAL_CODEC).ifPresent(stack -> items.set(BYPRODUCT_SLOT, stack));
 		this.progress = input.getIntOr("progress", 0);
 		this.maxProgress = input.getIntOr("max_progress", 0);
 	}
@@ -165,20 +215,19 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 	@Override
 	protected void saveAdditional(ValueOutput output) {
 		super.saveAdditional(output);
-		output.store("input", ItemStack.OPTIONAL_CODEC, input);
-		output.store("output", ItemStack.OPTIONAL_CODEC, this.output);
-		output.store("byproduct", ItemStack.OPTIONAL_CODEC, byproduct);
+		ContainerHelper.saveAllItems(output, items);
 		output.putInt("progress", progress);
 		output.putInt("max_progress", maxProgress);
 	}
 
 	private void finishRecipe(ProcessingRecipe recipe) {
-		output = merge(output, recipe.result());
-		recipe.byproduct().ifPresent(result -> byproduct = merge(byproduct, result));
+		items.set(OUTPUT_SLOT, merge(items.get(OUTPUT_SLOT), recipe.result()));
+		recipe.byproduct().ifPresent(result -> items.set(BYPRODUCT_SLOT, merge(items.get(BYPRODUCT_SLOT), result)));
 	}
 
 	private boolean canAccept(ProcessingRecipe recipe) {
-		return canMerge(output, recipe.result()) && recipe.byproduct().map(result -> canMerge(byproduct, result)).orElse(true);
+		return canMerge(items.get(OUTPUT_SLOT), recipe.result())
+				&& recipe.byproduct().map(result -> canMerge(items.get(BYPRODUCT_SLOT), result)).orElse(true);
 	}
 
 	private static ItemStack merge(ItemStack current, ProcessingOutput result) {
@@ -217,5 +266,76 @@ public class ProcessingMachineBlockEntity extends BlockEntity {
 		}
 
 		return MachineOperation.CRUSHING;
+	}
+
+	@Override
+	public int getContainerSize() {
+		return SLOT_COUNT;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (ItemStack stack : items) {
+			if (!stack.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public ItemStack getItem(int slot) {
+		return items.get(slot);
+	}
+
+	@Override
+	public ItemStack removeItem(int slot, int amount) {
+		ItemStack stack = ContainerHelper.removeItem(items, slot, amount);
+		if (!stack.isEmpty()) {
+			setChanged();
+		}
+		return stack;
+	}
+
+	@Override
+	public ItemStack removeItemNoUpdate(int slot) {
+		return ContainerHelper.takeItem(items, slot);
+	}
+
+	@Override
+	public void setItem(int slot, ItemStack stack) {
+		items.set(slot, stack);
+		stack.limitSize(getMaxStackSize(stack));
+		setChanged();
+	}
+
+	@Override
+	public boolean stillValid(Player player) {
+		return Container.stillValidBlockEntity(this, player);
+	}
+
+	@Override
+	public boolean canPlaceItem(int slot, ItemStack stack) {
+		return slot == INPUT_SLOT && canProcessInput(stack);
+	}
+
+	@Override
+	public void clearContent() {
+		items = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
+	}
+
+	@Override
+	public Component getDisplayName() {
+		return getBlockState().getBlock().getName();
+	}
+
+	@Override
+	public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
+		return new ProcessingMachineMenu(containerId, inventory, this, data);
+	}
+
+	@Override
+	public BlockPos getScreenOpeningData(ServerPlayer player) {
+		return worldPosition;
 	}
 }

@@ -6,7 +6,7 @@ import com.ertores.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -75,17 +75,7 @@ public class ProcessingMachineBlock extends BaseEntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 
-		if (stack.isEmpty()) {
-			return interactWithEmptyHand(level, pos, player);
-		}
-
-		if (level.getBlockEntity(pos) instanceof ProcessingMachineBlockEntity machine && machine.insertOne(stack, player)) {
-			player.sendOverlayMessage(Component.translatable("message.ertores.machine_inserted"));
-			return InteractionResult.SUCCESS_SERVER;
-		}
-
-		player.sendOverlayMessage(Component.translatable("message.ertores.machine_reject"));
-		return InteractionResult.SUCCESS_SERVER;
+		return openMachineMenu(level, pos, player);
 	}
 
 	@Override
@@ -94,14 +84,12 @@ public class ProcessingMachineBlock extends BaseEntityBlock {
 			return InteractionResult.SUCCESS;
 		}
 
-		return interactWithEmptyHand(level, pos, player);
+		return openMachineMenu(level, pos, player);
 	}
 
-	private InteractionResult interactWithEmptyHand(Level level, BlockPos pos, Player player) {
-		if (level.getBlockEntity(pos) instanceof ProcessingMachineBlockEntity machine) {
-			if (!machine.extractTo(player)) {
-				player.sendOverlayMessage(machine.status());
-			}
+	private InteractionResult openMachineMenu(Level level, BlockPos pos, Player player) {
+		if (level.getBlockEntity(pos) instanceof ProcessingMachineBlockEntity machine && player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.openMenu(machine);
 			return InteractionResult.SUCCESS_SERVER;
 		}
 

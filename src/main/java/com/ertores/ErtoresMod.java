@@ -5,6 +5,7 @@ import com.ertores.registry.ModBlockEntities;
 import com.ertores.registry.ModBlocks;
 import com.ertores.registry.ModCreativeTabs;
 import com.ertores.registry.ModItems;
+import com.ertores.registry.ModMenus;
 import com.ertores.worldgen.*;
 import net.fabricmc.api.ModInitializer;
 
@@ -72,6 +73,7 @@ public class ErtoresMod implements ModInitializer {
 		ModItems.initialize();
 		ModBlocks.initialize();
 		ModBlockEntities.initialize();
+		ModMenus.initialize();
 		ModCreativeTabs.initialize();
 		ProcessingRecipeManager.register();
 
