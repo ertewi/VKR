@@ -1,9 +1,15 @@
 package com.ertores.client;
 
+import com.ertores.client.geology.ClientGeologyData;
+import com.ertores.client.gui.GeologyTabletScreen;
 import com.ertores.client.gui.ProcessingMachineScreen;
 import com.ertores.menu.ProcessingMachineMenu;
 import com.ertores.registry.ModMenus;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -13,9 +19,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 public class ErtoresModClient implements ClientModInitializer {
+	private static KeyMapping geologyTabletKey;
+
 	@Override
 	public void onInitializeClient() {
 		registerProcessingMachineScreen();
+		registerGeologyTablet();
 	}
 
 	private static void registerProcessingMachineScreen() {
@@ -44,5 +53,24 @@ public class ErtoresModClient implements ClientModInitializer {
 		} catch (ReflectiveOperationException exception) {
 			throw new IllegalStateException("Failed to register ertOres processing machine screen", exception);
 		}
+	}
+
+	private static void registerGeologyTablet() {
+		geologyTabletKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+				"key.ertores.geology_tablet",
+				InputConstants.Type.KEYSYM,
+				InputConstants.KEY_G,
+				KeyMapping.Category.MISC
+		));
+
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			ClientGeologyData.tick(client);
+
+			while (geologyTabletKey.consumeClick()) {
+				if (client.player != null && client.level != null && client.screen == null) {
+					client.setScreen(new GeologyTabletScreen());
+				}
+			}
+		});
 	}
 }
